@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DogGallery</string>
+    <string name="main_toolbar_title">Dog Gallery</string>
+    <string name="filter">Filtrar</string>
+    <string name="systemAppearance">Aparencia do sistema</string>
+    <string name="dog_picture_description">Foto de um cachorro</string>
+</resources>
