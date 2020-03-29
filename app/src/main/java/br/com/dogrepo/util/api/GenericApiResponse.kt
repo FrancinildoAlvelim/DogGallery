@@ -1,5 +1,4 @@
 package br.com.dogrepo.util.api
-import android.util.Log
 import retrofit2.Response
 
 /**
@@ -17,13 +16,11 @@ sealed class GenericApiResponse<T> {
             return ApiErrorResponse(error.message ?: "unknown error")
         }
 
+//        fun <T> create(loading: Boolean): GenericApiResponse<T> {
+//            return ApiLoadingResponse(loading)
+//        }
+
         fun <T> create(response: Response<T>): GenericApiResponse<T> {
-
-            Log.d(TAG, "GenericApiResponse: response: ${response}")
-            Log.d(TAG, "GenericApiResponse: raw: ${response.raw()}")
-            Log.d(TAG, "GenericApiResponse: headers: ${response.headers()}")
-            Log.d(TAG, "GenericApiResponse: message: ${response.message()}")
-
             if(response.isSuccessful){
                 val body = response.body()
                 if (body == null || response.code() == 204) {
@@ -52,6 +49,9 @@ sealed class GenericApiResponse<T> {
 /**
  * separate class for HTTP 204 responses so that we can make ApiSuccessResponse's body non-null.
  */
+
+class ApiLoadingResponse<T>(loading: Boolean) : GenericApiResponse<T>()
+
 class ApiEmptyResponse<T> : GenericApiResponse<T>()
 
 data class ApiSuccessResponse<T>(val body: T) : GenericApiResponse<T>() {}

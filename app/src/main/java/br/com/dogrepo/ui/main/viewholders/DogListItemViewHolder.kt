@@ -6,11 +6,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import br.com.dogrepo.R
-import br.com.dogrepo.models.Dog
 import br.com.dogrepo.util.GenericAdapter
 import br.com.dogrepo.util.extensions.loadImage
 
-class DogListItemViewHolder : RecyclerView.ViewHolder, GenericAdapter.ViewBinder<Dog> {
+class DogListItemViewHolder : RecyclerView.ViewHolder, GenericAdapter.ViewBinder<String> {
 
     private val dogPicture: ImageView
     private val dogPictureLoading: ProgressBar
@@ -22,8 +21,8 @@ class DogListItemViewHolder : RecyclerView.ViewHolder, GenericAdapter.ViewBinder
         this.dogPictureLoading = view.findViewById(R.id.dogPictureLoading)
     }
 
-    override fun bindView(data: Dog) {
-        dogPicture.loadImage(uri = data.picture,
+    override fun bindView(data: String) {
+        dogPicture.loadImage(uri = data,
             onDone = {
                 hideImageLoading()
             },

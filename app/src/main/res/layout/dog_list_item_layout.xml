@@ -4,7 +4,7 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/lightGrey"
     app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true">
 
@@ -12,6 +12,7 @@
         android:id="@+id/dogPicture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="56dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/dog_picture_description"
         android:scaleType="fitCenter" />
@@ -22,6 +23,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:alpha="0.4" />
+        android:alpha="0.4"
+        android:indeterminateTint="@color/black" />
 
 </androidx.cardview.widget.CardView>
