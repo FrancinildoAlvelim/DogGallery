@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
-fun ImageView.loadImage(uri: String,  onDone: ()-> Unit, onError: ()-> Unit ) {
+fun ImageView.loadImage(uri: String, onDone: () -> Unit = {}, onError: () -> Unit = {}) {
 
     this@loadImage.scaleType = ImageView.ScaleType.CENTER
 
@@ -18,7 +18,7 @@ fun ImageView.loadImage(uri: String,  onDone: ()-> Unit, onError: ()-> Unit ) {
         .load(uri)
         .placeholder(android.R.color.darker_gray)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
-        .listener( object : RequestListener<Drawable>{
+        .listener(object : RequestListener<Drawable> {
             override fun onLoadFailed(
                 e: GlideException?,
                 model: Any?,
@@ -28,6 +28,7 @@ fun ImageView.loadImage(uri: String,  onDone: ()-> Unit, onError: ()-> Unit ) {
                 onError()
                 return true
             }
+
             override fun onResourceReady(
                 resource: Drawable?,
                 model: Any?,

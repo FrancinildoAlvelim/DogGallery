@@ -11,27 +11,32 @@ import br.com.dogrepo.util.extensions.loadImage
 
 class DogListItemViewHolder : RecyclerView.ViewHolder, GenericAdapter.ViewBinder<String> {
 
+    private var dogSelectedHandler: (image: String) -> Unit
+
     private val dogPicture: ImageView
     private val dogPictureLoading: ProgressBar
     private val context: Context
 
-    constructor(view: View) : super(view) {
+    constructor(view: View, onDogSelected: (image: String) -> Unit) : super(view) {
         this.context = view.context
         this.dogPicture = view.findViewById(R.id.dogPicture)
         this.dogPictureLoading = view.findViewById(R.id.dogPictureLoading)
+        this.dogSelectedHandler = onDogSelected
     }
 
     override fun bindView(data: String) {
-        dogPicture.loadImage(uri = data,
+        this.dogPicture.loadImage(uri = data,
             onDone = {
                 hideImageLoading()
             },
             onError = {
                 hideImageLoading()
             })
+        this.dogPicture.setOnClickListener {
+            this.dogSelectedHandler(data)
+        }
     }
 
-    private fun hideImageLoading() {
-        dogPictureLoading.let { dogPictureLoading.visibility = View.GONE }
-    }
+    private fun hideImageLoading() =
+        dogPictureLoading.let { it.visibility = View.GONE }
 }

@@ -1,12 +1,5 @@
 package br.com.dogrepo.util.api
 
-enum class ApiRequestStatus {
-    LOADING,
-    SUCCESS,
-    ERROR,
-    UNDEFINED
-}
-
 data class ApiRequestState<T>(
     var message: String? = null,
     var loading: Boolean = false,

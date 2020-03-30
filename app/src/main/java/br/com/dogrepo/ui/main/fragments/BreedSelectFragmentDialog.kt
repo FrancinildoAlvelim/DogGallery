@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.dogrepo.R
@@ -20,17 +19,19 @@ import br.com.dogrepo.ui.main.viewholders.BreedListItemViewHolder
 import br.com.dogrepo.ui.main.viewmodels.MainViewModel
 import br.com.dogrepo.util.GenericAdapter
 import kotlinx.android.synthetic.main.breed_select_dialog.*
+import org.koin.android.ext.android.inject
 
 
-class BreedSelectDialog : DialogFragment() {
+class BreedSelectFragmentDialog : DialogFragment() {
 
     companion object {
-        fun newInstance() = BreedSelectDialog()
+        fun newInstance() = BreedSelectFragmentDialog()
         fun tag() = "BreedSelectDialog"
     }
 
-    lateinit var mainViewModel: MainViewModel
     lateinit var breedListAdapter: GenericAdapter<String>
+
+    private val mainViewModel: MainViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,13 +48,13 @@ class BreedSelectDialog : DialogFragment() {
     }
 
     private fun getBreedsFromApi() {
-        mainViewModel.dispatchEvent(MainStateEvent.GetAllBreeds())
+        val state = mainViewModel.getViewValue()
+        if (state?.breedList.isNullOrEmpty()) {
+            mainViewModel.dispatchEvent(MainStateEvent.GetAllBreeds())
+        }
     }
 
     private fun setupViewModel() {
-        mainViewModel = activity?.let { ViewModelProvider(this).get(MainViewModel::class.java) }
-            ?: throw Exception("Invalid activity")
-
         mainViewModel.dataState.observe(viewLifecycleOwner,
             Observer { dataState ->
                 dataState?.data.let { state ->
@@ -91,15 +92,13 @@ class BreedSelectDialog : DialogFragment() {
         breedsProgressBar.visibility = View.GONE
     }
 
-    private fun notifyLoading() {
-        Toast.makeText(context, "Buscando dados", Toast.LENGTH_SHORT).show()
-    }
-
+    private fun notifyLoading() =
+        Toast.makeText(context, "Searching dogs", Toast.LENGTH_SHORT).show()
 
     private fun setupBreedList() {
         breedListAdapter = object : GenericAdapter<String>() {
             override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder =
-                BreedListItemViewHolder(view) { this@BreedSelectDialog.onBreedSelected(it) }
+                BreedListItemViewHolder(view) { this@BreedSelectFragmentDialog.onBreedSelected(it) }
 
             override fun getLayoutId(position: Int, objects: String): Int =
                 R.layout.breed_select_dialog_item
@@ -111,19 +110,15 @@ class BreedSelectDialog : DialogFragment() {
         breedSelectRecyclerView.adapter = breedListAdapter
     }
 
-    private fun onBreedSelected(breed: String) {
-        breed.let {
+    private fun onBreedSelected(breed: String?) {
+        breed?.let {
             mainViewModel.dispatchEvent(GetDogsByBreed(breed))
-        }
+            dismiss()
+        } ?: throw Exception("Please provide an breed to search")
     }
 
     private fun setupCloseButton() {
         closeBreedDialogButton.setOnClickListener { dismiss() }
-    }
-
-    override fun onResume() {
-        prepareDialog()
-        super.onResume()
     }
 
     private fun prepareDialog() {
@@ -142,8 +137,13 @@ class BreedSelectDialog : DialogFragment() {
             dialogHeightInPercentage
         )
         dialog!!.window!!.setGravity(Gravity.BOTTOM)
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent);
+        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         dialog!!.window!!.attributes.windowAnimations = R.style.DialogSlideAnim
+    }
+
+    override fun onResume() {
+        prepareDialog()
+        super.onResume()
     }
 
 }

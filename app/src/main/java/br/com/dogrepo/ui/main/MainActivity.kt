@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import br.com.dogrepo.R
-import br.com.dogrepo.ui.main.fragments.BreedSelectDialog
+import br.com.dogrepo.ui.main.fragments.BreedSelectFragmentDialog
 import br.com.dogrepo.ui.main.fragments.MainFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBreedSelectDialog() {
-        val breedDialog = BreedSelectDialog.newInstance()
+        val breedDialog = BreedSelectFragmentDialog.newInstance()
         breedDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogSlideAnim)
-        breedDialog.show(supportFragmentManager, BreedSelectDialog.tag())
+        breedDialog.show(supportFragmentManager, BreedSelectFragmentDialog.tag())
     }
 
 }

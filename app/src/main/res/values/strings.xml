@@ -5,4 +5,5 @@
     <string name="systemAppearance">Aparencia do sistema</string>
     <string name="dog_picture_description">Foto de um cachorro</string>
     <string name="select_breed">Select breed</string>
+    <string name="close_label">Close</string>
 </resources>

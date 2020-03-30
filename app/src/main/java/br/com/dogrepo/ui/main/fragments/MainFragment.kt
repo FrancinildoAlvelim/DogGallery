@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
@@ -17,11 +16,12 @@ import br.com.dogrepo.ui.main.viewholders.DogListItemViewHolder
 import br.com.dogrepo.ui.main.viewmodels.MainViewModel
 import br.com.dogrepo.util.GenericAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.koin.android.ext.android.inject
 
 class MainFragment : Fragment() {
-    lateinit var mainViewModel: MainViewModel
-    lateinit var dogListAdapter: GenericAdapter<String>
+    private lateinit var dogListAdapter: GenericAdapter<String>
     private val itemsPerColumn: Int = 2
+    private val mainViewModel: MainViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,8 +47,6 @@ class MainFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        mainViewModel = activity?.let { ViewModelProvider(this).get(MainViewModel::class.java) }
-            ?: throw Exception("Invalid activity")
 
         mainViewModel.dataState.observe(viewLifecycleOwner,
             Observer { state ->
@@ -81,15 +79,10 @@ class MainFragment : Fragment() {
 
     }
 
-
     private fun notifyLoading() {
-        Toast.makeText(context, "Getting data", Toast.LENGTH_SHORT).show()
     }
 
-    private fun notifySuccess() {
-        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
-        hideLoading()
-    }
+    private fun notifySuccess() = hideLoading()
 
     private fun hideLoading() {
         if (pullToRefresh.isRefreshing) {
@@ -101,10 +94,21 @@ class MainFragment : Fragment() {
         dogListAdapter.setList(list)
     }
 
+    private fun showDogDetails(dogImage: String?) {
+        val dogDetailDialog = DogDetailsFragmentDialog.newInstance()
+        dogDetailDialog.setDogImageUri(dogImage)
+        activity?.supportFragmentManager?.let {
+            dogDetailDialog.show(
+                it,
+                DogDetailsFragmentDialog.tag()
+            )
+        }
+    }
+
     private fun setupDogAdapter() {
         dogListAdapter = object : GenericAdapter<String>() {
             override fun getViewHolder(view: View, viewType: Int): RecyclerView.ViewHolder =
-                DogListItemViewHolder(view)
+                DogListItemViewHolder(view) { showDogDetails(it) }
 
             override fun getLayoutId(position: Int, objects: String): Int =
                 R.layout.dog_list_item_layout

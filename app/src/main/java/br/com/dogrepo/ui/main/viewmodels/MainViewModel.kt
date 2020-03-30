@@ -10,6 +10,7 @@ import br.com.dogrepo.ui.main.state.MainStateEvent.*
 import br.com.dogrepo.ui.main.state.MainViewState
 import br.com.dogrepo.util.AbsentLiveData
 import br.com.dogrepo.util.api.ApiRequestState
+import org.koin.dsl.module
 
 class MainViewModel : ViewModel() {
     private val _stateEvent: MutableLiveData<MainStateEvent> = MutableLiveData()
@@ -23,7 +24,7 @@ class MainViewModel : ViewModel() {
             handleStateChanges(_stateEvent)
         }
 
-    fun handleStateChanges(_stateEvent: MainStateEvent): LiveData<ApiRequestState<MainViewState>> =
+    private fun handleStateChanges(_stateEvent: MainStateEvent): LiveData<ApiRequestState<MainViewState>> =
         when (_stateEvent) {
             is GetDogsRandomly -> MainRepository.getDogsRandomly()
             is GetDogsByBreed -> MainRepository.getDogsByBreed(
@@ -44,6 +45,7 @@ class MainViewModel : ViewModel() {
             breedList = newBreedList
         }
     }
+
     private fun setState(handler: (_viewState: MainViewState) -> MainViewState) {
         val newState = handler(getState())
         _viewState.value = newState
@@ -53,8 +55,15 @@ class MainViewModel : ViewModel() {
         it
     } ?: MainViewState()
 
+    fun getViewValue() = viewState.value
+
     fun dispatchEvent(event: MainStateEvent) {
         _stateEvent.value = event
     }
 
+}
+
+
+val mainViewModelModule = module {
+    single { MainViewModel() }
 }
