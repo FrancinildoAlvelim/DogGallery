@@ -35,9 +35,7 @@ class MainViewModel : ViewModel() {
                     super.onActive()
                     value = DataState.data(
                         message = null,
-                        data = MainViewState(
-                            selectedBreed = _stateEvent.selectedBreed
-                        )
+                        data = setSelectedBreed(_stateEvent.selectedBreed)
                     )
                 }
             }
@@ -51,7 +49,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun setSelectedBreed(newBreed: String) = setState {
+    fun setSelectedBreed(newBreed: String?) = setState {
         it.apply {
             selectedBreed = newBreed
         }
@@ -63,9 +61,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun setState(handler: (_viewState: MainViewState) -> MainViewState) {
+    private fun setState(handler: (_viewState: MainViewState) -> MainViewState): MainViewState? {
         val newState = handler(getState())
         _viewState.value = newState
+
+        return _viewState.value
     }
 
     private fun getState(): MainViewState = viewState.value ?: MainViewState()
