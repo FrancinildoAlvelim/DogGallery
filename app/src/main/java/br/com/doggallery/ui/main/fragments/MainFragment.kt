@@ -96,7 +96,7 @@ class MainFragment : Fragment() {
     }
 
     private fun notifyLoading() {
-        TODO()
+        // TODO("show loading placeholder")
     }
 
     private fun notifySuccess() = hideLoading()
