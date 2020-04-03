@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">DogGallery</string>
     <string name="main_toolbar_title">Dog Gallery</string>
-    <string name="filter">Filtrar</string>
-    <string name="systemAppearance">Aparencia do sistema</string>
-    <string name="dog_picture_description">Foto de um cachorro</string>
+    <string name="filter">Filter</string>
+    <string name="systemAppearance">System Appearance</string>
+    <string name="dog_picture_description">Showing an dog photo</string>
     <string name="select_breed">Select breed</string>
     <string name="close_label">Close</string>
     <string name="results_to_placeholder">Results to</string>
+    <string name="clear_button_label">Clear filter</string>
+    <string name="clear_text_description">Click here to clear filter</string>
 </resources>
