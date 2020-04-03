@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.fragment_container, newFragment)
             disallowAddToBackStack()
         }
-        transaction.commit();
+        transaction.commit()
     }
 
     private fun setupToolbarMenu() {

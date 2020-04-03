@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
 import br.com.doggallery.R
 import br.com.doggallery.ui.main.state.MainStateEvent.GetDogsRandomly
+import br.com.doggallery.ui.main.state.MainStateEvent.SetDogBreed
 import br.com.doggallery.ui.main.viewholders.DogListItemViewHolder
 import br.com.doggallery.ui.main.viewmodels.MainViewModel
 import br.com.doggallery.util.GenericAdapter
@@ -32,17 +33,29 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupDogAdapter()
         setupPullToRefresh()
+        setupClearFilter()
         setupViewModel()
-        getRandomDogs()
+        randomlyGetDogs()
+    }
+
+    private fun setupClearFilter() {
+        clearFilterButton.setOnClickListener {
+            filterContainer.visibility = View.GONE
+            mainViewModel.dispatchEvent(
+                SetDogBreed(null)
+            ).run {
+                randomlyGetDogs()
+            }
+        }
     }
 
     private fun setupPullToRefresh() {
         pullToRefresh.setOnRefreshListener {
-            getRandomDogs()
+            randomlyGetDogs()
         }
     }
 
-    private fun getRandomDogs() {
+    private fun randomlyGetDogs() {
         mainViewModel.dispatchEvent(GetDogsRandomly())
     }
 
@@ -83,6 +96,7 @@ class MainFragment : Fragment() {
     }
 
     private fun notifyLoading() {
+        TODO()
     }
 
     private fun notifySuccess() = hideLoading()
@@ -98,8 +112,8 @@ class MainFragment : Fragment() {
     }
 
     private fun handleBreedChange(breed: String?) {
-        setFilterText("""${resources.getString(R.string.results_to_placeholder)} "$breed" """)
-        filterText.visibility = View.VISIBLE
+        setFilterText("""${resources.getString(R.string.results_to_placeholder)} "$breed"""")
+        filterContainer.visibility = View.VISIBLE
     }
 
     private fun setFilterText(message: String?) {
@@ -116,7 +130,7 @@ class MainFragment : Fragment() {
                 it,
                 DogDetailsFragmentDialog.tag()
             )
-        } ?: throw Exception("Cannot show dog details. No supportFragmentManager provided")
+        } ?: throw Exception("Cannot show dog details. No supportFragmentManager or activity provided")
     }
 
     private fun setupDogAdapter() {
